@@ -3,10 +3,11 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/controller"
 	"io"
 	"net"
 	"sync"
+
+	"douyin-project/controller"
 )
 
 var chatConnMap = sync.Map{}

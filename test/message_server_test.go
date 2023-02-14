@@ -3,11 +3,12 @@ package test
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/controller"
 	"io"
 	"net"
 	"testing"
 	"time"
+
+	"douyin-project/controller"
 )
 
 func TestMessageServer(t *testing.T) {
