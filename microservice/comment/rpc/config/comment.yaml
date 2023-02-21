@@ -1,0 +1,5 @@
+# parseTime不知道为什么用=true不行，这里换成=1
+DbSource : root:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=1&loc=Asia%2FShanghai
+EtcdAdress : 127.0.0.1:2379
+ServiceAddress : 127.0.0.1:10001
+ServiceName : douyin-comment-service

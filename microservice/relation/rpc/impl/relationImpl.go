@@ -29,19 +29,19 @@ func (i *RelationImpl) SelectRelation(req *relation.SelectRelationRequest) (*rel
 		//相当于两个参数都没有传入，自然没有结果
 		results = []*model.Relation{}
 	} else if req.FollowerId == -1 {
-		ret, err := i.serviceCtx.RelationModel.SelectRelationByFollowid(i.ctx, req.FollowId)
+		ret, err := i.serviceCtx.RelationModel.FindByFollowid(i.ctx, req.FollowId)
 		if err != nil {
 			return nil, err
 		}
 		results = ret
 	} else if req.FollowId == -1 {
-		ret, err := i.serviceCtx.RelationModel.SelectRelationByFollowerid(i.ctx, req.FollowerId)
+		ret, err := i.serviceCtx.RelationModel.FindByFollowerid(i.ctx, req.FollowerId)
 		if err != nil {
 			return nil, err
 		}
 		results = ret
 	} else {
-		result, err := i.serviceCtx.RelationModel.SelectRelationByFollowidAndFollowerid(i.ctx, req.FollowId, req.FollowerId)
+		result, err := i.serviceCtx.RelationModel.FindByFollowidAndFollowerid(i.ctx, req.FollowId, req.FollowerId)
 		if err != nil {
 			return nil, err
 		}

@@ -1,4 +1,4 @@
 DbSource : root:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
 EtcdAdress : 127.0.0.1:2379
-ServiceAddress : 127.0.0.1:8899
+ServiceAddress : 127.0.0.1:10002
 ServiceName : douyin-relation-service

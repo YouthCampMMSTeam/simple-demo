@@ -8,8 +8,7 @@ import (
 )
 
 type Relation struct {
-	// gorm.Model
-	Id         int64 `gorm:"primary_key"`
+	ID         int64 `gorm:"primary_key"`
 	FollowId   int64
 	FollowerId int64
 	IsDeleted  bool
@@ -21,9 +20,9 @@ func (r *Relation) TableName() string {
 }
 
 type RelationModel interface {
-	SelectRelationByFollowidAndFollowerid(ctx context.Context, followId int64, followerId int64) (*Relation, error)
-	SelectRelationByFollowerid(ctx context.Context, followerId int64) ([]*Relation, error)
-	SelectRelationByFollowid(ctx context.Context, followId int64) ([]*Relation, error)
+	FindByFollowidAndFollowerid(ctx context.Context, followId int64, followerId int64) (*Relation, error)
+	FindByFollowerid(ctx context.Context, followerId int64) ([]*Relation, error)
+	FindByFollowid(ctx context.Context, followId int64) ([]*Relation, error)
 }
 
 type relationSqlModel struct {
@@ -37,7 +36,7 @@ func NewRelationDbModel(sqlConn *gorm.DB) RelationModel {
 }
 
 //查询关注列表（根据两个用户id查询）
-func (m *relationSqlModel) SelectRelationByFollowidAndFollowerid(ctx context.Context, followId int64, followerId int64) (*Relation, error) {
+func (m *relationSqlModel) FindByFollowidAndFollowerid(ctx context.Context, followId int64, followerId int64) (*Relation, error) {
 	var result Relation
 	//注意这里where中的命名规则是和数据库一致的，即使用下划线而非大小写
 	if err := m.SqlConn.WithContext(ctx).Where("follow_id = ?", followId).Where("follower_id = ?", followerId).First(&result).Error; err != nil {
@@ -51,7 +50,7 @@ func (m *relationSqlModel) SelectRelationByFollowidAndFollowerid(ctx context.Con
 }
 
 // 查询关注列表（根据关注用户id）
-func (m *relationSqlModel) SelectRelationByFollowerid(ctx context.Context, followerId int64) ([]*Relation, error) {
+func (m *relationSqlModel) FindByFollowerid(ctx context.Context, followerId int64) ([]*Relation, error) {
 	var results []*Relation
 
 	//使用数组查询，空结果也不会有error，而是通过len(results)判断结果个数
@@ -62,7 +61,7 @@ func (m *relationSqlModel) SelectRelationByFollowerid(ctx context.Context, follo
 }
 
 // 查询关注列表（根据被关注用户id）
-func (m *relationSqlModel) SelectRelationByFollowid(ctx context.Context, followId int64) ([]*Relation, error) {
+func (m *relationSqlModel) FindByFollowid(ctx context.Context, followId int64) ([]*Relation, error) {
 	var results []*Relation
 	if err := m.SqlConn.WithContext(ctx).Where("follow_id = ?", followId).Find(&results).Error; err != nil {
 		return nil, err
