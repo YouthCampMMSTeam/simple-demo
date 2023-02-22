@@ -119,7 +119,9 @@ func (l *FavoriteLogic) FavoriteList(ctx context.Context, req *types.FavoriteLis
 	//对每一个视频进行分析
 	var videosDetails []*types.Video
 	for _, f := range findByUserIdResp.FavoriteList {
-		v := &types.Video{}
+		v := &types.Video{
+			Author: &types.User{}, //因为是指针，别忘了再给一个对象
+		}
 		//TODO 下面部分err没判断
 		//获取视频信息
 		findByVideoIdResp, _ := l.serviceCtx.VideoRpc.FindByVideoId(ctx, &video.FindByVideoIdReq{VideoId: f.VideoId})
