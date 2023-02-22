@@ -29,6 +29,8 @@ type VideoModel interface {
 	FindByUserId(ctx context.Context, userId int64) ([]*Video, error)
 	Insert(ctx context.Context, video *Video) error
 	Update(ctx context.Context, video *Video) error
+	FavoriteCountModified(ctx context.Context, videoId uint, posOrNeg bool) error
+	CommentCountModified(ctx context.Context, videoId uint, posOrNeg bool) error
 }
 
 type videoSqlModel struct {
@@ -81,6 +83,37 @@ func (m *videoSqlModel) Update(ctx context.Context, video *Video) error {
 	videoMod := &Video{}
 	videoMod.ID = video.ID
 	if err := m.SqlConn.WithContext(ctx).Model(videoMod).Updates(*video).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *videoSqlModel) FavoriteCountModified(ctx context.Context, videoId uint, posOrNeg bool) error {
+
+	videoMod := &Video{}
+	videoMod.ID = videoId
+	var addValue int64
+	if posOrNeg == true {
+		addValue = 1
+	} else {
+		addValue = -1
+	}
+	if err := m.SqlConn.WithContext(ctx).Model(videoMod).Update("favorite_count", gorm.Expr("favorite_count + ?", addValue)).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *videoSqlModel) CommentCountModified(ctx context.Context, videoId uint, posOrNeg bool) error {
+	videoMod := &Video{}
+	videoMod.ID = videoId
+	var addValue int64
+	if posOrNeg == true {
+		addValue = 1
+	} else {
+		addValue = -1
+	}
+	if err := m.SqlConn.WithContext(ctx).Model(videoMod).Update("comment_count", gorm.Expr("comment_count + ?", addValue)).Error; err != nil {
 		return err
 	}
 	return nil

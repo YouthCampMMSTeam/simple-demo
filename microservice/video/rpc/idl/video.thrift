@@ -46,6 +46,21 @@ struct UpdateReq {
 struct UpdateResp {
 }
 
+struct FavoriteCountModifiedReq {
+    1: required i64 videoId
+    2: required bool posOrNeg
+}
+
+struct FavoriteCountModifiedResp {
+}
+
+struct CommentCountModifiedReq {
+    1: required i64 videoId
+    2: required bool posOrNeg
+}
+
+struct CommentCountModifiedResp {
+}
 service VideoService {
     FindOrderByTimeResp FindOrderByTime(1: FindOrderByTimeReq req);
     // FindOrderByTimeRangeResp FindOrderByTimeRange(1: FindOrderByTimeRangeReq req);
@@ -53,6 +68,8 @@ service VideoService {
     FindByUserIdResp FindByUserId(1: FindByUserIdReq req);
     InsertResp Insert(1: InsertReq req);
     UpdateResp Update(1: UpdateReq req);
+    FavoriteCountModifiedResp FavoriteCountModified(1: FavoriteCountModifiedReq req);
+    CommentCountModifiedResp CommentCountModified(1: CommentCountModifiedReq req);
 }
 
 //kitex -module douyin-project -service Video ./idl/video.thrift

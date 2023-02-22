@@ -19,11 +19,13 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	serviceName := "VideoService"
 	handlerType := (*video.VideoService)(nil)
 	methods := map[string]kitex.MethodInfo{
-		"FindOrderByTime": kitex.NewMethodInfo(findOrderByTimeHandler, newVideoServiceFindOrderByTimeArgs, newVideoServiceFindOrderByTimeResult, false),
-		"FindByVideoId":   kitex.NewMethodInfo(findByVideoIdHandler, newVideoServiceFindByVideoIdArgs, newVideoServiceFindByVideoIdResult, false),
-		"FindByUserId":    kitex.NewMethodInfo(findByUserIdHandler, newVideoServiceFindByUserIdArgs, newVideoServiceFindByUserIdResult, false),
-		"Insert":          kitex.NewMethodInfo(insertHandler, newVideoServiceInsertArgs, newVideoServiceInsertResult, false),
-		"Update":          kitex.NewMethodInfo(updateHandler, newVideoServiceUpdateArgs, newVideoServiceUpdateResult, false),
+		"FindOrderByTime":       kitex.NewMethodInfo(findOrderByTimeHandler, newVideoServiceFindOrderByTimeArgs, newVideoServiceFindOrderByTimeResult, false),
+		"FindByVideoId":         kitex.NewMethodInfo(findByVideoIdHandler, newVideoServiceFindByVideoIdArgs, newVideoServiceFindByVideoIdResult, false),
+		"FindByUserId":          kitex.NewMethodInfo(findByUserIdHandler, newVideoServiceFindByUserIdArgs, newVideoServiceFindByUserIdResult, false),
+		"Insert":                kitex.NewMethodInfo(insertHandler, newVideoServiceInsertArgs, newVideoServiceInsertResult, false),
+		"Update":                kitex.NewMethodInfo(updateHandler, newVideoServiceUpdateArgs, newVideoServiceUpdateResult, false),
+		"FavoriteCountModified": kitex.NewMethodInfo(favoriteCountModifiedHandler, newVideoServiceFavoriteCountModifiedArgs, newVideoServiceFavoriteCountModifiedResult, false),
+		"CommentCountModified":  kitex.NewMethodInfo(commentCountModifiedHandler, newVideoServiceCommentCountModifiedArgs, newVideoServiceCommentCountModifiedResult, false),
 	}
 	extra := map[string]interface{}{
 		"PackageName": "video",
@@ -129,6 +131,42 @@ func newVideoServiceUpdateResult() interface{} {
 	return video.NewVideoServiceUpdateResult()
 }
 
+func favoriteCountModifiedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceFavoriteCountModifiedArgs)
+	realResult := result.(*video.VideoServiceFavoriteCountModifiedResult)
+	success, err := handler.(video.VideoService).FavoriteCountModified(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceFavoriteCountModifiedArgs() interface{} {
+	return video.NewVideoServiceFavoriteCountModifiedArgs()
+}
+
+func newVideoServiceFavoriteCountModifiedResult() interface{} {
+	return video.NewVideoServiceFavoriteCountModifiedResult()
+}
+
+func commentCountModifiedHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceCommentCountModifiedArgs)
+	realResult := result.(*video.VideoServiceCommentCountModifiedResult)
+	success, err := handler.(video.VideoService).CommentCountModified(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceCommentCountModifiedArgs() interface{} {
+	return video.NewVideoServiceCommentCountModifiedArgs()
+}
+
+func newVideoServiceCommentCountModifiedResult() interface{} {
+	return video.NewVideoServiceCommentCountModifiedResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -184,6 +222,26 @@ func (p *kClient) Update(ctx context.Context, req *video.UpdateReq) (r *video.Up
 	_args.Req = req
 	var _result video.VideoServiceUpdateResult
 	if err = p.c.Call(ctx, "Update", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FavoriteCountModified(ctx context.Context, req *video.FavoriteCountModifiedReq) (r *video.FavoriteCountModifiedResp, err error) {
+	var _args video.VideoServiceFavoriteCountModifiedArgs
+	_args.Req = req
+	var _result video.VideoServiceFavoriteCountModifiedResult
+	if err = p.c.Call(ctx, "FavoriteCountModified", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) CommentCountModified(ctx context.Context, req *video.CommentCountModifiedReq) (r *video.CommentCountModifiedResp, err error) {
+	var _args video.VideoServiceCommentCountModifiedArgs
+	_args.Req = req
+	var _result video.VideoServiceCommentCountModifiedResult
+	if err = p.c.Call(ctx, "CommentCountModified", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

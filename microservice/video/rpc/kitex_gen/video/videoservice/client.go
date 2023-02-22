@@ -16,6 +16,8 @@ type Client interface {
 	FindByUserId(ctx context.Context, req *video.FindByUserIdReq, callOptions ...callopt.Option) (r *video.FindByUserIdResp, err error)
 	Insert(ctx context.Context, req *video.InsertReq, callOptions ...callopt.Option) (r *video.InsertResp, err error)
 	Update(ctx context.Context, req *video.UpdateReq, callOptions ...callopt.Option) (r *video.UpdateResp, err error)
+	FavoriteCountModified(ctx context.Context, req *video.FavoriteCountModifiedReq, callOptions ...callopt.Option) (r *video.FavoriteCountModifiedResp, err error)
+	CommentCountModified(ctx context.Context, req *video.CommentCountModifiedReq, callOptions ...callopt.Option) (r *video.CommentCountModifiedResp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +72,14 @@ func (p *kVideoServiceClient) Insert(ctx context.Context, req *video.InsertReq, 
 func (p *kVideoServiceClient) Update(ctx context.Context, req *video.UpdateReq, callOptions ...callopt.Option) (r *video.UpdateResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Update(ctx, req)
+}
+
+func (p *kVideoServiceClient) FavoriteCountModified(ctx context.Context, req *video.FavoriteCountModifiedReq, callOptions ...callopt.Option) (r *video.FavoriteCountModifiedResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FavoriteCountModified(ctx, req)
+}
+
+func (p *kVideoServiceClient) CommentCountModified(ctx context.Context, req *video.CommentCountModifiedReq, callOptions ...callopt.Option) (r *video.CommentCountModifiedResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.CommentCountModified(ctx, req)
 }

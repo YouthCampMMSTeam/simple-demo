@@ -6,7 +6,6 @@ import (
 	"douyin-project/microservice/video/rpc/config"
 	"douyin-project/microservice/video/rpc/kitex_gen/video"
 	"douyin-project/microservice/video/rpc/svcctx"
-	"fmt"
 
 	"github.com/jinzhu/copier"
 )
@@ -74,9 +73,23 @@ func (s *VideoServiceImpl) Update(ctx context.Context, req *video.UpdateReq) (re
 	copier.Copy(u, req.Video)
 	//ID对应Id转不过来，手动转一下
 	u.ID = uint(req.Video.Id)
-	fmt.Printf("%+v\n", u)
-	fmt.Printf("%+v\n", req.Video)
 	if err := s.serviceCtx.VideoModel.Update(ctx, u); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// FavoriteCountModified implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) FavoriteCountModified(ctx context.Context, req *video.FavoriteCountModifiedReq) (resp *video.FavoriteCountModifiedResp, err error) {
+	if err := s.serviceCtx.VideoModel.FavoriteCountModified(ctx, uint(req.VideoId), req.PosOrNeg); err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
+
+// CommentCountModified implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) CommentCountModified(ctx context.Context, req *video.CommentCountModifiedReq) (resp *video.CommentCountModifiedResp, err error) {
+	if err := s.serviceCtx.VideoModel.CommentCountModified(ctx, uint(req.VideoId), req.PosOrNeg); err != nil {
 		return nil, err
 	}
 	return resp, nil
