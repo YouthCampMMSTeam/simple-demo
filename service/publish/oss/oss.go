@@ -9,7 +9,7 @@ import (
 
 // TranToUrl file: 原始文件，filename: 新文件名字，例如xxx.mp4,只提供xxx即可
 func TranToUrl(file *multipart.FileHeader, filename string) (url string, err error) {
-	client, err := oss.New("https://oss-cn-shanghai.aliyuncs.com", "LTAI5t9xU7a8kjDkHNHaQ8ti", "IsCWxAoPUPkpRVa3kihDldswsPFPeO")
+	client, err := oss.New("https://oss-cn-shanghai.aliyuncs.com", "yourAccessKeyID", "yourAccessKeySecret")
 	if err != nil {
 		return "", err
 	}
