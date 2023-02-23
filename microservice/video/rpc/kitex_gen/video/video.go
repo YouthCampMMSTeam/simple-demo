@@ -872,6 +872,434 @@ func (p *FindOrderByTimeResp) Field1DeepEqual(src []*Video) bool {
 	return true
 }
 
+type FindWithTimeLimitReq struct {
+	LatestTime int64 `thrift:"LatestTime,1,required" frugal:"1,required,i64" json:"LatestTime"`
+}
+
+func NewFindWithTimeLimitReq() *FindWithTimeLimitReq {
+	return &FindWithTimeLimitReq{}
+}
+
+func (p *FindWithTimeLimitReq) InitDefault() {
+	*p = FindWithTimeLimitReq{}
+}
+
+func (p *FindWithTimeLimitReq) GetLatestTime() (v int64) {
+	return p.LatestTime
+}
+func (p *FindWithTimeLimitReq) SetLatestTime(val int64) {
+	p.LatestTime = val
+}
+
+var fieldIDToName_FindWithTimeLimitReq = map[int16]string{
+	1: "LatestTime",
+}
+
+func (p *FindWithTimeLimitReq) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetLatestTime bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetLatestTime = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetLatestTime {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindWithTimeLimitReq[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindWithTimeLimitReq[fieldId]))
+}
+
+func (p *FindWithTimeLimitReq) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.LatestTime = v
+	}
+	return nil
+}
+
+func (p *FindWithTimeLimitReq) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindWithTimeLimitReq"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *FindWithTimeLimitReq) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("LatestTime", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LatestTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *FindWithTimeLimitReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("FindWithTimeLimitReq(%+v)", *p)
+}
+
+func (p *FindWithTimeLimitReq) DeepEqual(ano *FindWithTimeLimitReq) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.LatestTime) {
+		return false
+	}
+	return true
+}
+
+func (p *FindWithTimeLimitReq) Field1DeepEqual(src int64) bool {
+
+	if p.LatestTime != src {
+		return false
+	}
+	return true
+}
+
+type FindWithTimeLimitResp struct {
+	VideoList []*Video `thrift:"videoList,1" frugal:"1,default,list<Video>" json:"videoList"`
+	NextTime  int64    `thrift:"NextTime,2,required" frugal:"2,required,i64" json:"NextTime"`
+}
+
+func NewFindWithTimeLimitResp() *FindWithTimeLimitResp {
+	return &FindWithTimeLimitResp{}
+}
+
+func (p *FindWithTimeLimitResp) InitDefault() {
+	*p = FindWithTimeLimitResp{}
+}
+
+func (p *FindWithTimeLimitResp) GetVideoList() (v []*Video) {
+	return p.VideoList
+}
+
+func (p *FindWithTimeLimitResp) GetNextTime() (v int64) {
+	return p.NextTime
+}
+func (p *FindWithTimeLimitResp) SetVideoList(val []*Video) {
+	p.VideoList = val
+}
+func (p *FindWithTimeLimitResp) SetNextTime(val int64) {
+	p.NextTime = val
+}
+
+var fieldIDToName_FindWithTimeLimitResp = map[int16]string{
+	1: "videoList",
+	2: "NextTime",
+}
+
+func (p *FindWithTimeLimitResp) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetNextTime bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetNextTime = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetNextTime {
+		fieldId = 2
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindWithTimeLimitResp[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindWithTimeLimitResp[fieldId]))
+}
+
+func (p *FindWithTimeLimitResp) ReadField1(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.VideoList = make([]*Video, 0, size)
+	for i := 0; i < size; i++ {
+		_elem := NewVideo()
+		if err := _elem.Read(iprot); err != nil {
+			return err
+		}
+
+		p.VideoList = append(p.VideoList, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *FindWithTimeLimitResp) ReadField2(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.NextTime = v
+	}
+	return nil
+}
+
+func (p *FindWithTimeLimitResp) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindWithTimeLimitResp"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *FindWithTimeLimitResp) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("videoList", thrift.LIST, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.VideoList)); err != nil {
+		return err
+	}
+	for _, v := range p.VideoList {
+		if err := v.Write(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *FindWithTimeLimitResp) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("NextTime", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.NextTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
+func (p *FindWithTimeLimitResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("FindWithTimeLimitResp(%+v)", *p)
+}
+
+func (p *FindWithTimeLimitResp) DeepEqual(ano *FindWithTimeLimitResp) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.VideoList) {
+		return false
+	}
+	if !p.Field2DeepEqual(ano.NextTime) {
+		return false
+	}
+	return true
+}
+
+func (p *FindWithTimeLimitResp) Field1DeepEqual(src []*Video) bool {
+
+	if len(p.VideoList) != len(src) {
+		return false
+	}
+	for i, v := range p.VideoList {
+		_src := src[i]
+		if !v.DeepEqual(_src) {
+			return false
+		}
+	}
+	return true
+}
+func (p *FindWithTimeLimitResp) Field2DeepEqual(src int64) bool {
+
+	if p.NextTime != src {
+		return false
+	}
+	return true
+}
+
 type FindByVideoIdReq struct {
 	VideoId int64 `thrift:"VideoId,1,required" frugal:"1,required,i64" json:"VideoId"`
 }
@@ -2887,6 +3315,8 @@ func (p *CommentCountModifiedResp) DeepEqual(ano *CommentCountModifiedResp) bool
 type VideoService interface {
 	FindOrderByTime(ctx context.Context, req *FindOrderByTimeReq) (r *FindOrderByTimeResp, err error)
 
+	FindWithTimeLimit(ctx context.Context, req *FindWithTimeLimitReq) (r *FindWithTimeLimitResp, err error)
+
 	FindByVideoId(ctx context.Context, req *FindByVideoIdReq) (r *FindByVideoIdResp, err error)
 
 	FindByUserId(ctx context.Context, req *FindByUserIdReq) (r *FindByUserIdResp, err error)
@@ -2931,6 +3361,15 @@ func (p *VideoServiceClient) FindOrderByTime(ctx context.Context, req *FindOrder
 	_args.Req = req
 	var _result VideoServiceFindOrderByTimeResult
 	if err = p.Client_().Call(ctx, "FindOrderByTime", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *VideoServiceClient) FindWithTimeLimit(ctx context.Context, req *FindWithTimeLimitReq) (r *FindWithTimeLimitResp, err error) {
+	var _args VideoServiceFindWithTimeLimitArgs
+	_args.Req = req
+	var _result VideoServiceFindWithTimeLimitResult
+	if err = p.Client_().Call(ctx, "FindWithTimeLimit", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -3011,6 +3450,7 @@ func (p *VideoServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunct
 func NewVideoServiceProcessor(handler VideoService) *VideoServiceProcessor {
 	self := &VideoServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("FindOrderByTime", &videoServiceProcessorFindOrderByTime{handler: handler})
+	self.AddToProcessorMap("FindWithTimeLimit", &videoServiceProcessorFindWithTimeLimit{handler: handler})
 	self.AddToProcessorMap("FindByVideoId", &videoServiceProcessorFindByVideoId{handler: handler})
 	self.AddToProcessorMap("FindByUserId", &videoServiceProcessorFindByUserId{handler: handler})
 	self.AddToProcessorMap("Insert", &videoServiceProcessorInsert{handler: handler})
@@ -3068,6 +3508,54 @@ func (p *videoServiceProcessorFindOrderByTime) Process(ctx context.Context, seqI
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("FindOrderByTime", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type videoServiceProcessorFindWithTimeLimit struct {
+	handler VideoService
+}
+
+func (p *videoServiceProcessorFindWithTimeLimit) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := VideoServiceFindWithTimeLimitArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("FindWithTimeLimit", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := VideoServiceFindWithTimeLimitResult{}
+	var retval *FindWithTimeLimitResp
+	if retval, err2 = p.handler.FindWithTimeLimit(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindWithTimeLimit: "+err2.Error())
+		oprot.WriteMessageBegin("FindWithTimeLimit", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("FindWithTimeLimit", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3712,6 +4200,352 @@ func (p *VideoServiceFindOrderByTimeResult) DeepEqual(ano *VideoServiceFindOrder
 }
 
 func (p *VideoServiceFindOrderByTimeResult) Field0DeepEqual(src *FindOrderByTimeResp) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type VideoServiceFindWithTimeLimitArgs struct {
+	Req *FindWithTimeLimitReq `thrift:"req,1" frugal:"1,default,FindWithTimeLimitReq" json:"req"`
+}
+
+func NewVideoServiceFindWithTimeLimitArgs() *VideoServiceFindWithTimeLimitArgs {
+	return &VideoServiceFindWithTimeLimitArgs{}
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) InitDefault() {
+	*p = VideoServiceFindWithTimeLimitArgs{}
+}
+
+var VideoServiceFindWithTimeLimitArgs_Req_DEFAULT *FindWithTimeLimitReq
+
+func (p *VideoServiceFindWithTimeLimitArgs) GetReq() (v *FindWithTimeLimitReq) {
+	if !p.IsSetReq() {
+		return VideoServiceFindWithTimeLimitArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *VideoServiceFindWithTimeLimitArgs) SetReq(val *FindWithTimeLimitReq) {
+	p.Req = val
+}
+
+var fieldIDToName_VideoServiceFindWithTimeLimitArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_VideoServiceFindWithTimeLimitArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewFindWithTimeLimitReq()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindWithTimeLimit_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("VideoServiceFindWithTimeLimitArgs(%+v)", *p)
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) DeepEqual(ano *VideoServiceFindWithTimeLimitArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *VideoServiceFindWithTimeLimitArgs) Field1DeepEqual(src *FindWithTimeLimitReq) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type VideoServiceFindWithTimeLimitResult struct {
+	Success *FindWithTimeLimitResp `thrift:"success,0,optional" frugal:"0,optional,FindWithTimeLimitResp" json:"success,omitempty"`
+}
+
+func NewVideoServiceFindWithTimeLimitResult() *VideoServiceFindWithTimeLimitResult {
+	return &VideoServiceFindWithTimeLimitResult{}
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) InitDefault() {
+	*p = VideoServiceFindWithTimeLimitResult{}
+}
+
+var VideoServiceFindWithTimeLimitResult_Success_DEFAULT *FindWithTimeLimitResp
+
+func (p *VideoServiceFindWithTimeLimitResult) GetSuccess() (v *FindWithTimeLimitResp) {
+	if !p.IsSetSuccess() {
+		return VideoServiceFindWithTimeLimitResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *VideoServiceFindWithTimeLimitResult) SetSuccess(x interface{}) {
+	p.Success = x.(*FindWithTimeLimitResp)
+}
+
+var fieldIDToName_VideoServiceFindWithTimeLimitResult = map[int16]string{
+	0: "success",
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_VideoServiceFindWithTimeLimitResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewFindWithTimeLimitResp()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindWithTimeLimit_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("VideoServiceFindWithTimeLimitResult(%+v)", *p)
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) DeepEqual(ano *VideoServiceFindWithTimeLimitResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *VideoServiceFindWithTimeLimitResult) Field0DeepEqual(src *FindWithTimeLimitResp) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

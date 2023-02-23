@@ -29,7 +29,7 @@ func main() {
 
 	// fmt.Println("InsertCommentRequest Test")
 
-	// insertReq := &comment.InsertCommentRequest{
+	// insertReq := &comment.InsertCommentReq{
 	// 	Comment: &comment.Comment{
 	// 		VideoId: 1,
 	// 		UserId:  1,
@@ -46,7 +46,7 @@ func main() {
 
 	fmt.Println("FindCommentByVideoIdLimit30Request Test")
 
-	findReq := &comment.FindCommentByVideoIdLimit30Request{
+	findReq := &comment.FindCommentByVideoIdLimit30Req{
 		VideoId: 1,
 	}
 

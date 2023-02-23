@@ -11,8 +11,10 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	Insert(ctx context.Context, req *comment.InsertRequest, callOptions ...callopt.Option) (r *comment.InsertResp, err error)
-	FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Request, callOptions ...callopt.Option) (r *comment.FindCommentByVideoIdLimit30Resp, err error)
+	Insert(ctx context.Context, req *comment.InsertReq, callOptions ...callopt.Option) (r *comment.InsertResp, err error)
+	Delete(ctx context.Context, req *comment.DeleteReq, callOptions ...callopt.Option) (r *comment.DeleteResp, err error)
+	FindByVideoId(ctx context.Context, req *comment.FindByVideoIdReq, callOptions ...callopt.Option) (r *comment.FindByVideoIdResp, err error)
+	FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Req, callOptions ...callopt.Option) (r *comment.FindCommentByVideoIdLimit30Resp, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -44,12 +46,22 @@ type kCommentServiceClient struct {
 	*kClient
 }
 
-func (p *kCommentServiceClient) Insert(ctx context.Context, req *comment.InsertRequest, callOptions ...callopt.Option) (r *comment.InsertResp, err error) {
+func (p *kCommentServiceClient) Insert(ctx context.Context, req *comment.InsertReq, callOptions ...callopt.Option) (r *comment.InsertResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.Insert(ctx, req)
 }
 
-func (p *kCommentServiceClient) FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Request, callOptions ...callopt.Option) (r *comment.FindCommentByVideoIdLimit30Resp, err error) {
+func (p *kCommentServiceClient) Delete(ctx context.Context, req *comment.DeleteReq, callOptions ...callopt.Option) (r *comment.DeleteResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.Delete(ctx, req)
+}
+
+func (p *kCommentServiceClient) FindByVideoId(ctx context.Context, req *comment.FindByVideoIdReq, callOptions ...callopt.Option) (r *comment.FindByVideoIdResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FindByVideoId(ctx, req)
+}
+
+func (p *kCommentServiceClient) FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Req, callOptions ...callopt.Option) (r *comment.FindCommentByVideoIdLimit30Resp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FindCommentByVideoIdLimit30(ctx, req)
 }

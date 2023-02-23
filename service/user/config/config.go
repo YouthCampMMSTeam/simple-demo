@@ -7,13 +7,14 @@ import (
 )
 
 type Config struct {
-	DbSource        string `yaml:"DbSource"`
-	EtcdAdress      string `yaml:"EtcdAdress"`
-	ServiceAddress  string `yaml:"ServiceAddress"`
-	ServiceName     string `yaml:"ServiceName"`
-	UserServiceName string `yaml:"UserServiceName"`
-	IdentityKey     string `yaml:"IdentityKey"`
-	JwtKey          string `yaml:"jwtKey"`
+	DbSource            string `yaml:"DbSource"`
+	EtcdAdress          string `yaml:"EtcdAdress"`
+	ServiceAddress      string `yaml:"ServiceAddress"`
+	ServiceName         string `yaml:"ServiceName"`
+	UserServiceName     string `yaml:"UserServiceName"`
+	RelationServiceName string `yaml:"RelationServiceName"`
+	IdentityKey         string `yaml:"IdentityKey"`
+	JwtKey              string `yaml:"jwtKey"`
 }
 
 func Parse(path string) (*Config, error) {

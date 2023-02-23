@@ -1,6 +1,7 @@
 package svcctx
 
 import (
+	"douyin-project/microservice/relation/rpc/kitex_gen/relation/relationservice"
 	"douyin-project/microservice/user/rpc/kitex_gen/user/userservice"
 	"douyin-project/service/user/config"
 	"log"
@@ -11,7 +12,9 @@ import (
 
 type ServiceContext struct {
 	// EtcdResolver etcd.discovery.Resolver
-	UserRpc userservice.Client
+	IdentityKey string
+	UserRpc     userservice.Client
+	RelationRpc relationservice.Client
 	//rpc连接
 }
 
@@ -27,9 +30,17 @@ func NewServiceContext(c *config.Config) *ServiceContext {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	relationRpcClient, err := relationservice.NewClient(
+		c.RelationServiceName,
+		client.WithResolver(r),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
 	return &ServiceContext{
 		// EtcdResolver: ,
-		UserRpc: userRpcClient,
+		IdentityKey: c.IdentityKey,
+		UserRpc:     userRpcClient,
+		RelationRpc: relationRpcClient,
 	}
 }

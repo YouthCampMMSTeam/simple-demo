@@ -1,14 +1,9 @@
 package types
 
-type Response struct {
-	StatusCode int32  `json:status_code`
-	StatusMsg  string `json:status_msg`
-}
-
 type FavoriteActionReq struct {
-	// Token      string `form:"token" json:"token" query:"token"`
-	VideoId    int64 `form:"video_id" json:"video_id" query:"video_id"`
-	ActionType int32 `form:"action_type" json:"action_type" query:"action_type"`
+	Token      string `form:"token" json:"token" query:"token"`
+	VideoId    int64  `form:"video_id" json:"video_id" query:"video_id"`
+	ActionType int32  `form:"action_type" json:"action_type" query:"action_type"`
 }
 type FavoriteActionResp struct {
 	StatusCode int32  `json:status_code`

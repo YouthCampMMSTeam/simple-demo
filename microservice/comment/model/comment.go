@@ -22,6 +22,7 @@ func (c *Comment) TableName() string {
 
 type CommentModel interface {
 	FindByVideoIdLimit30(ctx context.Context, videoId int64) ([]*Comment, error)
+	FindByVideoId(ctx context.Context, videoId int64) ([]*Comment, error)
 	Insert(ctx context.Context, comment *Comment) error
 	Delete(ctx context.Context, commentId int64) error
 }
@@ -42,6 +43,15 @@ func (m *commentSqlModel) FindByVideoIdLimit30(ctx context.Context, videoId int6
 	var results []*Comment
 	//注意这里where中的命名规则是和数据库一致的，即使用下划线而非大小写
 	if err := m.SqlConn.WithContext(ctx).Where("video_id = ?", videoId).Order("created_at desc").Limit(30).Find(&results).Error; err != nil {
+		return nil, err
+	}
+	return results, nil
+}
+
+func (m *commentSqlModel) FindByVideoId(ctx context.Context, videoId int64) ([]*Comment, error) {
+	var results []*Comment
+	//注意这里where中的命名规则是和数据库一致的，即使用下划线而非大小写
+	if err := m.SqlConn.WithContext(ctx).Where("video_id = ?", videoId).Order("created_at desc").Find(&results).Error; err != nil {
 		return nil, err
 	}
 	return results, nil

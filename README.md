@@ -1,26 +1,16 @@
-# simple-demo
+# douyin-project
 
-## 抖音项目服务端简单示例
 
-具体功能内容参考飞书说明文档
 
-工程无其他依赖，直接编译运行即可
+## 抖音项目服务端简单实现
 
-```shell
-go build && ./simple-demo
-```
+实现接口参考：https://bytedance.feishu.cn/docs/doccnKrCsU5Iac6eftnFBdsXTof#
 
-### 功能说明
+### 使用说明
 
-接口功能不完善，仅作为示例
+分为微服务和上层服务两块，项目执行方式（下面步骤按顺序执行）
 
-* 用户登录数据保存在内存中，单次运行过程中有效
-* 视频上传后会保存到本地 public 目录中，访问时用 127.0.0.1:8080/static/video_name 即可
-
-### 测试
-
-test 目录下为不同场景的功能测试case，可用于验证功能实现正确性
-
-其中 common.go 中的 _serverAddr_ 为服务部署的地址，默认为本机地址，可以根据实际情况修改
-
-测试数据写在 demo_data.go 中，用于列表接口的 mock 测试
+1. 创建数据库，sql文件在/sql文件夹中（之后记得修改每一个微服务中的mysql连接地址）
+2. 启动etcd（如果端口有修改，修改每一个微服务/上层服务中的配置文件）
+3. 微服务启动，微服务在/microservice，启动方法是，在每一个微服务的./rpc文件夹中执行：`go run main.go`
+4. 上层服务启动，每一个服务在/service中，启动方法是，进入每一个上层服务的中间夹后，执行`go run main.go`

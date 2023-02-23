@@ -20,6 +20,7 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*video.VideoService)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"FindOrderByTime":       kitex.NewMethodInfo(findOrderByTimeHandler, newVideoServiceFindOrderByTimeArgs, newVideoServiceFindOrderByTimeResult, false),
+		"FindWithTimeLimit":     kitex.NewMethodInfo(findWithTimeLimitHandler, newVideoServiceFindWithTimeLimitArgs, newVideoServiceFindWithTimeLimitResult, false),
 		"FindByVideoId":         kitex.NewMethodInfo(findByVideoIdHandler, newVideoServiceFindByVideoIdArgs, newVideoServiceFindByVideoIdResult, false),
 		"FindByUserId":          kitex.NewMethodInfo(findByUserIdHandler, newVideoServiceFindByUserIdArgs, newVideoServiceFindByUserIdResult, false),
 		"Insert":                kitex.NewMethodInfo(insertHandler, newVideoServiceInsertArgs, newVideoServiceInsertResult, false),
@@ -57,6 +58,24 @@ func newVideoServiceFindOrderByTimeArgs() interface{} {
 
 func newVideoServiceFindOrderByTimeResult() interface{} {
 	return video.NewVideoServiceFindOrderByTimeResult()
+}
+
+func findWithTimeLimitHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*video.VideoServiceFindWithTimeLimitArgs)
+	realResult := result.(*video.VideoServiceFindWithTimeLimitResult)
+	success, err := handler.(video.VideoService).FindWithTimeLimit(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newVideoServiceFindWithTimeLimitArgs() interface{} {
+	return video.NewVideoServiceFindWithTimeLimitArgs()
+}
+
+func newVideoServiceFindWithTimeLimitResult() interface{} {
+	return video.NewVideoServiceFindWithTimeLimitResult()
 }
 
 func findByVideoIdHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -182,6 +201,16 @@ func (p *kClient) FindOrderByTime(ctx context.Context, req *video.FindOrderByTim
 	_args.Req = req
 	var _result video.VideoServiceFindOrderByTimeResult
 	if err = p.c.Call(ctx, "FindOrderByTime", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FindWithTimeLimit(ctx context.Context, req *video.FindWithTimeLimitReq) (r *video.FindWithTimeLimitResp, err error) {
+	var _args video.VideoServiceFindWithTimeLimitArgs
+	_args.Req = req
+	var _result video.VideoServiceFindWithTimeLimitResult
+	if err = p.c.Call(ctx, "FindWithTimeLimit", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

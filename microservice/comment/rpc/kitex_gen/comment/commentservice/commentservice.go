@@ -20,6 +20,8 @@ func NewServiceInfo() *kitex.ServiceInfo {
 	handlerType := (*comment.CommentService)(nil)
 	methods := map[string]kitex.MethodInfo{
 		"Insert":                      kitex.NewMethodInfo(insertHandler, newCommentServiceInsertArgs, newCommentServiceInsertResult, false),
+		"Delete":                      kitex.NewMethodInfo(deleteHandler, newCommentServiceDeleteArgs, newCommentServiceDeleteResult, false),
+		"FindByVideoId":               kitex.NewMethodInfo(findByVideoIdHandler, newCommentServiceFindByVideoIdArgs, newCommentServiceFindByVideoIdResult, false),
 		"FindCommentByVideoIdLimit30": kitex.NewMethodInfo(findCommentByVideoIdLimit30Handler, newCommentServiceFindCommentByVideoIdLimit30Args, newCommentServiceFindCommentByVideoIdLimit30Result, false),
 	}
 	extra := map[string]interface{}{
@@ -54,6 +56,42 @@ func newCommentServiceInsertResult() interface{} {
 	return comment.NewCommentServiceInsertResult()
 }
 
+func deleteHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*comment.CommentServiceDeleteArgs)
+	realResult := result.(*comment.CommentServiceDeleteResult)
+	success, err := handler.(comment.CommentService).Delete(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCommentServiceDeleteArgs() interface{} {
+	return comment.NewCommentServiceDeleteArgs()
+}
+
+func newCommentServiceDeleteResult() interface{} {
+	return comment.NewCommentServiceDeleteResult()
+}
+
+func findByVideoIdHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*comment.CommentServiceFindByVideoIdArgs)
+	realResult := result.(*comment.CommentServiceFindByVideoIdResult)
+	success, err := handler.(comment.CommentService).FindByVideoId(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newCommentServiceFindByVideoIdArgs() interface{} {
+	return comment.NewCommentServiceFindByVideoIdArgs()
+}
+
+func newCommentServiceFindByVideoIdResult() interface{} {
+	return comment.NewCommentServiceFindByVideoIdResult()
+}
+
 func findCommentByVideoIdLimit30Handler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*comment.CommentServiceFindCommentByVideoIdLimit30Args)
 	realResult := result.(*comment.CommentServiceFindCommentByVideoIdLimit30Result)
@@ -82,7 +120,7 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) Insert(ctx context.Context, req *comment.InsertRequest) (r *comment.InsertResp, err error) {
+func (p *kClient) Insert(ctx context.Context, req *comment.InsertReq) (r *comment.InsertResp, err error) {
 	var _args comment.CommentServiceInsertArgs
 	_args.Req = req
 	var _result comment.CommentServiceInsertResult
@@ -92,7 +130,27 @@ func (p *kClient) Insert(ctx context.Context, req *comment.InsertRequest) (r *co
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Request) (r *comment.FindCommentByVideoIdLimit30Resp, err error) {
+func (p *kClient) Delete(ctx context.Context, req *comment.DeleteReq) (r *comment.DeleteResp, err error) {
+	var _args comment.CommentServiceDeleteArgs
+	_args.Req = req
+	var _result comment.CommentServiceDeleteResult
+	if err = p.c.Call(ctx, "Delete", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FindByVideoId(ctx context.Context, req *comment.FindByVideoIdReq) (r *comment.FindByVideoIdResp, err error) {
+	var _args comment.CommentServiceFindByVideoIdArgs
+	_args.Req = req
+	var _result comment.CommentServiceFindByVideoIdResult
+	if err = p.c.Call(ctx, "FindByVideoId", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) FindCommentByVideoIdLimit30(ctx context.Context, req *comment.FindCommentByVideoIdLimit30Req) (r *comment.FindCommentByVideoIdLimit30Resp, err error) {
 	var _args comment.CommentServiceFindCommentByVideoIdLimit30Args
 	_args.Req = req
 	var _result comment.CommentServiceFindCommentByVideoIdLimit30Result

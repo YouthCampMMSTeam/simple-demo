@@ -17,6 +17,15 @@ struct FindOrderByTimeResp {
     1: list<Video> videoList
 }
 
+struct FindWithTimeLimitReq {
+    1: required i64 LatestTime
+}
+
+struct FindWithTimeLimitResp {
+    1: list<Video> videoList
+    2: required i64 NextTime
+}
+
 
 struct FindByVideoIdReq {
     1: required i64 VideoId
@@ -64,6 +73,7 @@ struct CommentCountModifiedResp {
 service VideoService {
     FindOrderByTimeResp FindOrderByTime(1: FindOrderByTimeReq req);
     // FindOrderByTimeRangeResp FindOrderByTimeRange(1: FindOrderByTimeRangeReq req);
+    FindWithTimeLimitResp FindWithTimeLimit(1: FindWithTimeLimitReq req);
     FindByVideoIdResp FindByVideoId(1: FindByVideoIdReq req);
     FindByUserIdResp FindByUserId(1: FindByUserIdReq req);
     InsertResp Insert(1: InsertReq req);

@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -25,6 +26,7 @@ func (v *Video) TableName() string {
 type VideoModel interface {
 	FindOrderByTime(ctx context.Context, limitNum int64) ([]*Video, error)
 	// FindOrderByTimeRange(ctx context.Context, earliestTime time.Time, latestTime time.Time) ([]*Video, error)
+	FindWithTimeLimit(ctx context.Context, LatestTime int64) ([]*Video, error)
 	FindByVideoId(ctx context.Context, videoId int64) ([]*Video, error)
 	FindByUserId(ctx context.Context, userId int64) ([]*Video, error)
 	Insert(ctx context.Context, video *Video) error
@@ -58,6 +60,22 @@ func (m *videoSqlModel) FindOrderByTime(ctx context.Context, limitNum int64) ([]
 // 	}
 // 	return results, nil
 // }
+
+func (m *videoSqlModel) FindWithTimeLimit(ctx context.Context, latestTime int64) ([]*Video, error) {
+	var results []*Video
+	if latestTime == 0 {
+		if err := m.SqlConn.WithContext(ctx).Order("created_at desc").Find(&results).Error; err != nil {
+			return nil, err
+		}
+	} else {
+		timeFormat := time.Unix(latestTime, 0)
+		if err := m.SqlConn.WithContext(ctx).Where("created_at >= ?", timeFormat).Order("created_at desc").Find(&results).Error; err != nil {
+			return nil, err
+		}
+	}
+	return results, nil
+}
+
 func (m *videoSqlModel) FindByVideoId(ctx context.Context, videoId int64) ([]*Video, error) {
 	var results []*Video
 	if err := m.SqlConn.WithContext(ctx).Where("id = ?", videoId).Find(&results).Error; err != nil {

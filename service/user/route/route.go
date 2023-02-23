@@ -17,4 +17,7 @@ func RegisterHandler(h *server.Hertz, c *config.Config, serverCtx *svcctx.Servic
 	douyinGroup.POST("/user/login/", jwtMiddleware.LoginHandler)
 	douyinGroup.GET("/user/register/", handler.UserRegisterHandler(serverCtx), jwtMiddleware.LoginHandler) //可以多个handler 后面增加login来处理token
 
+	//中间件应该也是handler
+	douyinGroup.GET("/user/", jwtMiddleware.MiddlewareFunc(), handler.UserInfoHandler(serverCtx))
+
 }

@@ -32,6 +32,20 @@ func (s *VideoServiceImpl) FindOrderByTime(ctx context.Context, req *video.FindO
 	return resp, nil
 }
 
+// FindWithTimeLimit implements the VideoServiceImpl interface.
+func (s *VideoServiceImpl) FindWithTimeLimit(ctx context.Context, req *video.FindWithTimeLimitReq) (resp *video.FindWithTimeLimitResp, err error) {
+	results, err := s.serviceCtx.VideoModel.FindWithTimeLimit(ctx, req.LatestTime)
+	if err != nil {
+		return nil, err
+	}
+	resp = &video.FindWithTimeLimitResp{}
+	copier.Copy(&resp.VideoList, &results)
+	if len(results) > 0 {
+		resp.NextTime = results[len(results)-1].CreatedAt.Unix()
+	}
+	return resp, nil
+}
+
 // FindByVideoId implements the VideoServiceImpl interface.
 func (s *VideoServiceImpl) FindByVideoId(ctx context.Context, req *video.FindByVideoIdReq) (resp *video.FindByVideoIdResp, err error) {
 	results, err := s.serviceCtx.VideoModel.FindByVideoId(ctx, req.VideoId)

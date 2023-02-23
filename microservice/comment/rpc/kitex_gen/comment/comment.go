@@ -10,10 +10,11 @@ import (
 )
 
 type Comment struct {
-	Id      int64  `thrift:"Id,1,required" frugal:"1,required,i64" json:"Id"`
-	VideoId int64  `thrift:"VideoId,2,required" frugal:"2,required,i64" json:"VideoId"`
-	UserId  int64  `thrift:"UserId,3,required" frugal:"3,required,i64" json:"UserId"`
-	Content string `thrift:"Content,4,required" frugal:"4,required,string" json:"Content"`
+	Id         int64  `thrift:"Id,1,required" frugal:"1,required,i64" json:"Id"`
+	VideoId    int64  `thrift:"VideoId,2,required" frugal:"2,required,i64" json:"VideoId"`
+	UserId     int64  `thrift:"UserId,3,required" frugal:"3,required,i64" json:"UserId"`
+	Content    string `thrift:"Content,4,required" frugal:"4,required,string" json:"Content"`
+	CreateDate string `thrift:"CreateDate,5,required" frugal:"5,required,string" json:"CreateDate"`
 }
 
 func NewComment() *Comment {
@@ -39,6 +40,10 @@ func (p *Comment) GetUserId() (v int64) {
 func (p *Comment) GetContent() (v string) {
 	return p.Content
 }
+
+func (p *Comment) GetCreateDate() (v string) {
+	return p.CreateDate
+}
 func (p *Comment) SetId(val int64) {
 	p.Id = val
 }
@@ -51,12 +56,16 @@ func (p *Comment) SetUserId(val int64) {
 func (p *Comment) SetContent(val string) {
 	p.Content = val
 }
+func (p *Comment) SetCreateDate(val string) {
+	p.CreateDate = val
+}
 
 var fieldIDToName_Comment = map[int16]string{
 	1: "Id",
 	2: "VideoId",
 	3: "UserId",
 	4: "Content",
+	5: "CreateDate",
 }
 
 func (p *Comment) Read(iprot thrift.TProtocol) (err error) {
@@ -67,6 +76,7 @@ func (p *Comment) Read(iprot thrift.TProtocol) (err error) {
 	var issetVideoId bool = false
 	var issetUserId bool = false
 	var issetContent bool = false
+	var issetCreateDate bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -126,6 +136,17 @@ func (p *Comment) Read(iprot thrift.TProtocol) (err error) {
 					goto SkipFieldError
 				}
 			}
+		case 5:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetCreateDate = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
@@ -157,6 +178,11 @@ func (p *Comment) Read(iprot thrift.TProtocol) (err error) {
 
 	if !issetContent {
 		fieldId = 4
+		goto RequiredFieldNotSetError
+	}
+
+	if !issetCreateDate {
+		fieldId = 5
 		goto RequiredFieldNotSetError
 	}
 	return nil
@@ -213,6 +239,15 @@ func (p *Comment) ReadField4(iprot thrift.TProtocol) error {
 	return nil
 }
 
+func (p *Comment) ReadField5(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		p.CreateDate = v
+	}
+	return nil
+}
+
 func (p *Comment) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
 	if err = oprot.WriteStructBegin("Comment"); err != nil {
@@ -233,6 +268,10 @@ func (p *Comment) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField4(oprot); err != nil {
 			fieldId = 4
+			goto WriteFieldError
+		}
+		if err = p.writeField5(oprot); err != nil {
+			fieldId = 5
 			goto WriteFieldError
 		}
 
@@ -322,6 +361,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
+func (p *Comment) writeField5(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("CreateDate", thrift.STRING, 5); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.CreateDate); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+
 func (p *Comment) String() string {
 	if p == nil {
 		return "<nil>"
@@ -345,6 +401,9 @@ func (p *Comment) DeepEqual(ano *Comment) bool {
 		return false
 	}
 	if !p.Field4DeepEqual(ano.Content) {
+		return false
+	}
+	if !p.Field5DeepEqual(ano.CreateDate) {
 		return false
 	}
 	return true
@@ -378,40 +437,47 @@ func (p *Comment) Field4DeepEqual(src string) bool {
 	}
 	return true
 }
+func (p *Comment) Field5DeepEqual(src string) bool {
 
-type InsertRequest struct {
+	if strings.Compare(p.CreateDate, src) != 0 {
+		return false
+	}
+	return true
+}
+
+type InsertReq struct {
 	Comment *Comment `thrift:"comment,1,required" frugal:"1,required,Comment" json:"comment"`
 }
 
-func NewInsertRequest() *InsertRequest {
-	return &InsertRequest{}
+func NewInsertReq() *InsertReq {
+	return &InsertReq{}
 }
 
-func (p *InsertRequest) InitDefault() {
-	*p = InsertRequest{}
+func (p *InsertReq) InitDefault() {
+	*p = InsertReq{}
 }
 
-var InsertRequest_Comment_DEFAULT *Comment
+var InsertReq_Comment_DEFAULT *Comment
 
-func (p *InsertRequest) GetComment() (v *Comment) {
+func (p *InsertReq) GetComment() (v *Comment) {
 	if !p.IsSetComment() {
-		return InsertRequest_Comment_DEFAULT
+		return InsertReq_Comment_DEFAULT
 	}
 	return p.Comment
 }
-func (p *InsertRequest) SetComment(val *Comment) {
+func (p *InsertReq) SetComment(val *Comment) {
 	p.Comment = val
 }
 
-var fieldIDToName_InsertRequest = map[int16]string{
+var fieldIDToName_InsertReq = map[int16]string{
 	1: "comment",
 }
 
-func (p *InsertRequest) IsSetComment() bool {
+func (p *InsertReq) IsSetComment() bool {
 	return p.Comment != nil
 }
 
-func (p *InsertRequest) Read(iprot thrift.TProtocol) (err error) {
+func (p *InsertReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -466,7 +532,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InsertRequest[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_InsertReq[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -475,10 +541,10 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_InsertRequest[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_InsertReq[fieldId]))
 }
 
-func (p *InsertRequest) ReadField1(iprot thrift.TProtocol) error {
+func (p *InsertReq) ReadField1(iprot thrift.TProtocol) error {
 	p.Comment = NewComment()
 	if err := p.Comment.Read(iprot); err != nil {
 		return err
@@ -486,9 +552,9 @@ func (p *InsertRequest) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *InsertRequest) Write(oprot thrift.TProtocol) (err error) {
+func (p *InsertReq) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("InsertRequest"); err != nil {
+	if err = oprot.WriteStructBegin("InsertReq"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -515,7 +581,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *InsertRequest) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *InsertReq) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("comment", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -532,14 +598,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *InsertRequest) String() string {
+func (p *InsertReq) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("InsertRequest(%+v)", *p)
+	return fmt.Sprintf("InsertReq(%+v)", *p)
 }
 
-func (p *InsertRequest) DeepEqual(ano *InsertRequest) bool {
+func (p *InsertReq) DeepEqual(ano *InsertReq) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -551,7 +617,7 @@ func (p *InsertRequest) DeepEqual(ano *InsertRequest) bool {
 	return true
 }
 
-func (p *InsertRequest) Field1DeepEqual(src *Comment) bool {
+func (p *InsertReq) Field1DeepEqual(src *Comment) bool {
 
 	if !p.Comment.DeepEqual(src) {
 		return false
@@ -560,7 +626,7 @@ func (p *InsertRequest) Field1DeepEqual(src *Comment) bool {
 }
 
 type InsertResp struct {
-	CommentId int64 `thrift:"CommentId,1,required" frugal:"1,required,i64" json:"CommentId"`
+	CreateDate string `thrift:"CreateDate,1,required" frugal:"1,required,string" json:"CreateDate"`
 }
 
 func NewInsertResp() *InsertResp {
@@ -571,22 +637,22 @@ func (p *InsertResp) InitDefault() {
 	*p = InsertResp{}
 }
 
-func (p *InsertResp) GetCommentId() (v int64) {
-	return p.CommentId
+func (p *InsertResp) GetCreateDate() (v string) {
+	return p.CreateDate
 }
-func (p *InsertResp) SetCommentId(val int64) {
-	p.CommentId = val
+func (p *InsertResp) SetCreateDate(val string) {
+	p.CreateDate = val
 }
 
 var fieldIDToName_InsertResp = map[int16]string{
-	1: "CommentId",
+	1: "CreateDate",
 }
 
 func (p *InsertResp) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
-	var issetCommentId bool = false
+	var issetCreateDate bool = false
 
 	if _, err = iprot.ReadStructBegin(); err != nil {
 		goto ReadStructBeginError
@@ -603,11 +669,11 @@ func (p *InsertResp) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
-				issetCommentId = true
+				issetCreateDate = true
 			} else {
 				if err = iprot.Skip(fieldTypeId); err != nil {
 					goto SkipFieldError
@@ -627,7 +693,7 @@ func (p *InsertResp) Read(iprot thrift.TProtocol) (err error) {
 		goto ReadStructEndError
 	}
 
-	if !issetCommentId {
+	if !issetCreateDate {
 		fieldId = 1
 		goto RequiredFieldNotSetError
 	}
@@ -650,10 +716,10 @@ RequiredFieldNotSetError:
 }
 
 func (p *InsertResp) ReadField1(iprot thrift.TProtocol) error {
-	if v, err := iprot.ReadI64(); err != nil {
+	if v, err := iprot.ReadString(); err != nil {
 		return err
 	} else {
-		p.CommentId = v
+		p.CreateDate = v
 	}
 	return nil
 }
@@ -688,10 +754,10 @@ WriteStructEndError:
 }
 
 func (p *InsertResp) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("CommentId", thrift.I64, 1); err != nil {
+	if err = oprot.WriteFieldBegin("CreateDate", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.CommentId); err != nil {
+	if err := oprot.WriteString(p.CreateDate); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -717,44 +783,44 @@ func (p *InsertResp) DeepEqual(ano *InsertResp) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.CommentId) {
+	if !p.Field1DeepEqual(ano.CreateDate) {
 		return false
 	}
 	return true
 }
 
-func (p *InsertResp) Field1DeepEqual(src int64) bool {
+func (p *InsertResp) Field1DeepEqual(src string) bool {
 
-	if p.CommentId != src {
+	if strings.Compare(p.CreateDate, src) != 0 {
 		return false
 	}
 	return true
 }
 
-type FindCommentByVideoIdLimit30Request struct {
+type FindByVideoIdReq struct {
 	VideoId int64 `thrift:"VideoId,1,required" frugal:"1,required,i64" json:"VideoId"`
 }
 
-func NewFindCommentByVideoIdLimit30Request() *FindCommentByVideoIdLimit30Request {
-	return &FindCommentByVideoIdLimit30Request{}
+func NewFindByVideoIdReq() *FindByVideoIdReq {
+	return &FindByVideoIdReq{}
 }
 
-func (p *FindCommentByVideoIdLimit30Request) InitDefault() {
-	*p = FindCommentByVideoIdLimit30Request{}
+func (p *FindByVideoIdReq) InitDefault() {
+	*p = FindByVideoIdReq{}
 }
 
-func (p *FindCommentByVideoIdLimit30Request) GetVideoId() (v int64) {
+func (p *FindByVideoIdReq) GetVideoId() (v int64) {
 	return p.VideoId
 }
-func (p *FindCommentByVideoIdLimit30Request) SetVideoId(val int64) {
+func (p *FindByVideoIdReq) SetVideoId(val int64) {
 	p.VideoId = val
 }
 
-var fieldIDToName_FindCommentByVideoIdLimit30Request = map[int16]string{
+var fieldIDToName_FindByVideoIdReq = map[int16]string{
 	1: "VideoId",
 }
 
-func (p *FindCommentByVideoIdLimit30Request) Read(iprot thrift.TProtocol) (err error) {
+func (p *FindByVideoIdReq) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -809,7 +875,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindCommentByVideoIdLimit30Request[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindByVideoIdReq[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -818,10 +884,10 @@ ReadFieldEndError:
 ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 RequiredFieldNotSetError:
-	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindCommentByVideoIdLimit30Request[fieldId]))
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindByVideoIdReq[fieldId]))
 }
 
-func (p *FindCommentByVideoIdLimit30Request) ReadField1(iprot thrift.TProtocol) error {
+func (p *FindByVideoIdReq) ReadField1(iprot thrift.TProtocol) error {
 	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
@@ -830,9 +896,9 @@ func (p *FindCommentByVideoIdLimit30Request) ReadField1(iprot thrift.TProtocol) 
 	return nil
 }
 
-func (p *FindCommentByVideoIdLimit30Request) Write(oprot thrift.TProtocol) (err error) {
+func (p *FindByVideoIdReq) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("FindCommentByVideoIdLimit30Request"); err != nil {
+	if err = oprot.WriteStructBegin("FindByVideoIdReq"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -859,7 +925,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *FindCommentByVideoIdLimit30Request) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *FindByVideoIdReq) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("VideoId", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -876,14 +942,14 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *FindCommentByVideoIdLimit30Request) String() string {
+func (p *FindByVideoIdReq) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("FindCommentByVideoIdLimit30Request(%+v)", *p)
+	return fmt.Sprintf("FindByVideoIdReq(%+v)", *p)
 }
 
-func (p *FindCommentByVideoIdLimit30Request) DeepEqual(ano *FindCommentByVideoIdLimit30Request) bool {
+func (p *FindByVideoIdReq) DeepEqual(ano *FindByVideoIdReq) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -895,7 +961,368 @@ func (p *FindCommentByVideoIdLimit30Request) DeepEqual(ano *FindCommentByVideoId
 	return true
 }
 
-func (p *FindCommentByVideoIdLimit30Request) Field1DeepEqual(src int64) bool {
+func (p *FindByVideoIdReq) Field1DeepEqual(src int64) bool {
+
+	if p.VideoId != src {
+		return false
+	}
+	return true
+}
+
+type FindByVideoIdResp struct {
+	CommentList []*Comment `thrift:"commentList,1" frugal:"1,default,list<Comment>" json:"commentList"`
+}
+
+func NewFindByVideoIdResp() *FindByVideoIdResp {
+	return &FindByVideoIdResp{}
+}
+
+func (p *FindByVideoIdResp) InitDefault() {
+	*p = FindByVideoIdResp{}
+}
+
+func (p *FindByVideoIdResp) GetCommentList() (v []*Comment) {
+	return p.CommentList
+}
+func (p *FindByVideoIdResp) SetCommentList(val []*Comment) {
+	p.CommentList = val
+}
+
+var fieldIDToName_FindByVideoIdResp = map[int16]string{
+	1: "commentList",
+}
+
+func (p *FindByVideoIdResp) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindByVideoIdResp[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *FindByVideoIdResp) ReadField1(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	p.CommentList = make([]*Comment, 0, size)
+	for i := 0; i < size; i++ {
+		_elem := NewComment()
+		if err := _elem.Read(iprot); err != nil {
+			return err
+		}
+
+		p.CommentList = append(p.CommentList, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *FindByVideoIdResp) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindByVideoIdResp"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *FindByVideoIdResp) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("commentList", thrift.LIST, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.STRUCT, len(p.CommentList)); err != nil {
+		return err
+	}
+	for _, v := range p.CommentList {
+		if err := v.Write(oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *FindByVideoIdResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("FindByVideoIdResp(%+v)", *p)
+}
+
+func (p *FindByVideoIdResp) DeepEqual(ano *FindByVideoIdResp) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.CommentList) {
+		return false
+	}
+	return true
+}
+
+func (p *FindByVideoIdResp) Field1DeepEqual(src []*Comment) bool {
+
+	if len(p.CommentList) != len(src) {
+		return false
+	}
+	for i, v := range p.CommentList {
+		_src := src[i]
+		if !v.DeepEqual(_src) {
+			return false
+		}
+	}
+	return true
+}
+
+type FindCommentByVideoIdLimit30Req struct {
+	VideoId int64 `thrift:"VideoId,1,required" frugal:"1,required,i64" json:"VideoId"`
+}
+
+func NewFindCommentByVideoIdLimit30Req() *FindCommentByVideoIdLimit30Req {
+	return &FindCommentByVideoIdLimit30Req{}
+}
+
+func (p *FindCommentByVideoIdLimit30Req) InitDefault() {
+	*p = FindCommentByVideoIdLimit30Req{}
+}
+
+func (p *FindCommentByVideoIdLimit30Req) GetVideoId() (v int64) {
+	return p.VideoId
+}
+func (p *FindCommentByVideoIdLimit30Req) SetVideoId(val int64) {
+	p.VideoId = val
+}
+
+var fieldIDToName_FindCommentByVideoIdLimit30Req = map[int16]string{
+	1: "VideoId",
+}
+
+func (p *FindCommentByVideoIdLimit30Req) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetVideoId bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetVideoId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetVideoId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_FindCommentByVideoIdLimit30Req[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_FindCommentByVideoIdLimit30Req[fieldId]))
+}
+
+func (p *FindCommentByVideoIdLimit30Req) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.VideoId = v
+	}
+	return nil
+}
+
+func (p *FindCommentByVideoIdLimit30Req) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindCommentByVideoIdLimit30Req"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *FindCommentByVideoIdLimit30Req) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("VideoId", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.VideoId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *FindCommentByVideoIdLimit30Req) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("FindCommentByVideoIdLimit30Req(%+v)", *p)
+}
+
+func (p *FindCommentByVideoIdLimit30Req) DeepEqual(ano *FindCommentByVideoIdLimit30Req) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.VideoId) {
+		return false
+	}
+	return true
+}
+
+func (p *FindCommentByVideoIdLimit30Req) Field1DeepEqual(src int64) bool {
 
 	if p.VideoId != src {
 		return false
@@ -1092,10 +1519,280 @@ func (p *FindCommentByVideoIdLimit30Resp) Field1DeepEqual(src []*Comment) bool {
 	return true
 }
 
-type CommentService interface {
-	Insert(ctx context.Context, req *InsertRequest) (r *InsertResp, err error)
+type DeleteReq struct {
+	CommentId int64 `thrift:"CommentId,1,required" frugal:"1,required,i64" json:"CommentId"`
+}
 
-	FindCommentByVideoIdLimit30(ctx context.Context, req *FindCommentByVideoIdLimit30Request) (r *FindCommentByVideoIdLimit30Resp, err error)
+func NewDeleteReq() *DeleteReq {
+	return &DeleteReq{}
+}
+
+func (p *DeleteReq) InitDefault() {
+	*p = DeleteReq{}
+}
+
+func (p *DeleteReq) GetCommentId() (v int64) {
+	return p.CommentId
+}
+func (p *DeleteReq) SetCommentId(val int64) {
+	p.CommentId = val
+}
+
+var fieldIDToName_DeleteReq = map[int16]string{
+	1: "CommentId",
+}
+
+func (p *DeleteReq) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+	var issetCommentId bool = false
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+				issetCommentId = true
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	if !issetCommentId {
+		fieldId = 1
+		goto RequiredFieldNotSetError
+	}
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_DeleteReq[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+RequiredFieldNotSetError:
+	return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("required field %s is not set", fieldIDToName_DeleteReq[fieldId]))
+}
+
+func (p *DeleteReq) ReadField1(iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		p.CommentId = v
+	}
+	return nil
+}
+
+func (p *DeleteReq) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("DeleteReq"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *DeleteReq) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("CommentId", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.CommentId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *DeleteReq) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteReq(%+v)", *p)
+}
+
+func (p *DeleteReq) DeepEqual(ano *DeleteReq) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.CommentId) {
+		return false
+	}
+	return true
+}
+
+func (p *DeleteReq) Field1DeepEqual(src int64) bool {
+
+	if p.CommentId != src {
+		return false
+	}
+	return true
+}
+
+type DeleteResp struct {
+}
+
+func NewDeleteResp() *DeleteResp {
+	return &DeleteResp{}
+}
+
+func (p *DeleteResp) InitDefault() {
+	*p = DeleteResp{}
+}
+
+var fieldIDToName_DeleteResp = map[int16]string{}
+
+func (p *DeleteResp) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *DeleteResp) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("DeleteResp"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *DeleteResp) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteResp(%+v)", *p)
+}
+
+func (p *DeleteResp) DeepEqual(ano *DeleteResp) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	return true
+}
+
+type CommentService interface {
+	Insert(ctx context.Context, req *InsertReq) (r *InsertResp, err error)
+
+	Delete(ctx context.Context, req *DeleteReq) (r *DeleteResp, err error)
+
+	FindByVideoId(ctx context.Context, req *FindByVideoIdReq) (r *FindByVideoIdResp, err error)
+
+	FindCommentByVideoIdLimit30(ctx context.Context, req *FindCommentByVideoIdLimit30Req) (r *FindCommentByVideoIdLimit30Resp, err error)
 }
 
 type CommentServiceClient struct {
@@ -1124,7 +1821,7 @@ func (p *CommentServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *CommentServiceClient) Insert(ctx context.Context, req *InsertRequest) (r *InsertResp, err error) {
+func (p *CommentServiceClient) Insert(ctx context.Context, req *InsertReq) (r *InsertResp, err error) {
 	var _args CommentServiceInsertArgs
 	_args.Req = req
 	var _result CommentServiceInsertResult
@@ -1133,7 +1830,25 @@ func (p *CommentServiceClient) Insert(ctx context.Context, req *InsertRequest) (
 	}
 	return _result.GetSuccess(), nil
 }
-func (p *CommentServiceClient) FindCommentByVideoIdLimit30(ctx context.Context, req *FindCommentByVideoIdLimit30Request) (r *FindCommentByVideoIdLimit30Resp, err error) {
+func (p *CommentServiceClient) Delete(ctx context.Context, req *DeleteReq) (r *DeleteResp, err error) {
+	var _args CommentServiceDeleteArgs
+	_args.Req = req
+	var _result CommentServiceDeleteResult
+	if err = p.Client_().Call(ctx, "Delete", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *CommentServiceClient) FindByVideoId(ctx context.Context, req *FindByVideoIdReq) (r *FindByVideoIdResp, err error) {
+	var _args CommentServiceFindByVideoIdArgs
+	_args.Req = req
+	var _result CommentServiceFindByVideoIdResult
+	if err = p.Client_().Call(ctx, "FindByVideoId", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *CommentServiceClient) FindCommentByVideoIdLimit30(ctx context.Context, req *FindCommentByVideoIdLimit30Req) (r *FindCommentByVideoIdLimit30Resp, err error) {
 	var _args CommentServiceFindCommentByVideoIdLimit30Args
 	_args.Req = req
 	var _result CommentServiceFindCommentByVideoIdLimit30Result
@@ -1164,6 +1879,8 @@ func (p *CommentServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFun
 func NewCommentServiceProcessor(handler CommentService) *CommentServiceProcessor {
 	self := &CommentServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("Insert", &commentServiceProcessorInsert{handler: handler})
+	self.AddToProcessorMap("Delete", &commentServiceProcessorDelete{handler: handler})
+	self.AddToProcessorMap("FindByVideoId", &commentServiceProcessorFindByVideoId{handler: handler})
 	self.AddToProcessorMap("FindCommentByVideoIdLimit30", &commentServiceProcessorFindCommentByVideoIdLimit30{handler: handler})
 	return self
 }
@@ -1233,6 +1950,102 @@ func (p *commentServiceProcessorInsert) Process(ctx context.Context, seqId int32
 	return true, err
 }
 
+type commentServiceProcessorDelete struct {
+	handler CommentService
+}
+
+func (p *commentServiceProcessorDelete) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := CommentServiceDeleteArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("Delete", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := CommentServiceDeleteResult{}
+	var retval *DeleteResp
+	if retval, err2 = p.handler.Delete(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Delete: "+err2.Error())
+		oprot.WriteMessageBegin("Delete", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("Delete", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type commentServiceProcessorFindByVideoId struct {
+	handler CommentService
+}
+
+func (p *commentServiceProcessorFindByVideoId) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := CommentServiceFindByVideoIdArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("FindByVideoId", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := CommentServiceFindByVideoIdResult{}
+	var retval *FindByVideoIdResp
+	if retval, err2 = p.handler.FindByVideoId(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing FindByVideoId: "+err2.Error())
+		oprot.WriteMessageBegin("FindByVideoId", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("FindByVideoId", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
 type commentServiceProcessorFindCommentByVideoIdLimit30 struct {
 	handler CommentService
 }
@@ -1282,7 +2095,7 @@ func (p *commentServiceProcessorFindCommentByVideoIdLimit30) Process(ctx context
 }
 
 type CommentServiceInsertArgs struct {
-	Req *InsertRequest `thrift:"req,1" frugal:"1,default,InsertRequest" json:"req"`
+	Req *InsertReq `thrift:"req,1" frugal:"1,default,InsertReq" json:"req"`
 }
 
 func NewCommentServiceInsertArgs() *CommentServiceInsertArgs {
@@ -1293,15 +2106,15 @@ func (p *CommentServiceInsertArgs) InitDefault() {
 	*p = CommentServiceInsertArgs{}
 }
 
-var CommentServiceInsertArgs_Req_DEFAULT *InsertRequest
+var CommentServiceInsertArgs_Req_DEFAULT *InsertReq
 
-func (p *CommentServiceInsertArgs) GetReq() (v *InsertRequest) {
+func (p *CommentServiceInsertArgs) GetReq() (v *InsertReq) {
 	if !p.IsSetReq() {
 		return CommentServiceInsertArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *CommentServiceInsertArgs) SetReq(val *InsertRequest) {
+func (p *CommentServiceInsertArgs) SetReq(val *InsertReq) {
 	p.Req = val
 }
 
@@ -1373,7 +2186,7 @@ ReadStructEndError:
 }
 
 func (p *CommentServiceInsertArgs) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewInsertRequest()
+	p.Req = NewInsertReq()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
@@ -1445,7 +2258,7 @@ func (p *CommentServiceInsertArgs) DeepEqual(ano *CommentServiceInsertArgs) bool
 	return true
 }
 
-func (p *CommentServiceInsertArgs) Field1DeepEqual(src *InsertRequest) bool {
+func (p *CommentServiceInsertArgs) Field1DeepEqual(src *InsertReq) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -1627,8 +2440,700 @@ func (p *CommentServiceInsertResult) Field0DeepEqual(src *InsertResp) bool {
 	return true
 }
 
+type CommentServiceDeleteArgs struct {
+	Req *DeleteReq `thrift:"req,1" frugal:"1,default,DeleteReq" json:"req"`
+}
+
+func NewCommentServiceDeleteArgs() *CommentServiceDeleteArgs {
+	return &CommentServiceDeleteArgs{}
+}
+
+func (p *CommentServiceDeleteArgs) InitDefault() {
+	*p = CommentServiceDeleteArgs{}
+}
+
+var CommentServiceDeleteArgs_Req_DEFAULT *DeleteReq
+
+func (p *CommentServiceDeleteArgs) GetReq() (v *DeleteReq) {
+	if !p.IsSetReq() {
+		return CommentServiceDeleteArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *CommentServiceDeleteArgs) SetReq(val *DeleteReq) {
+	p.Req = val
+}
+
+var fieldIDToName_CommentServiceDeleteArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *CommentServiceDeleteArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CommentServiceDeleteArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CommentServiceDeleteArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewDeleteReq()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CommentServiceDeleteArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("Delete_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentServiceDeleteArgs(%+v)", *p)
+}
+
+func (p *CommentServiceDeleteArgs) DeepEqual(ano *CommentServiceDeleteArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *CommentServiceDeleteArgs) Field1DeepEqual(src *DeleteReq) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type CommentServiceDeleteResult struct {
+	Success *DeleteResp `thrift:"success,0,optional" frugal:"0,optional,DeleteResp" json:"success,omitempty"`
+}
+
+func NewCommentServiceDeleteResult() *CommentServiceDeleteResult {
+	return &CommentServiceDeleteResult{}
+}
+
+func (p *CommentServiceDeleteResult) InitDefault() {
+	*p = CommentServiceDeleteResult{}
+}
+
+var CommentServiceDeleteResult_Success_DEFAULT *DeleteResp
+
+func (p *CommentServiceDeleteResult) GetSuccess() (v *DeleteResp) {
+	if !p.IsSetSuccess() {
+		return CommentServiceDeleteResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *CommentServiceDeleteResult) SetSuccess(x interface{}) {
+	p.Success = x.(*DeleteResp)
+}
+
+var fieldIDToName_CommentServiceDeleteResult = map[int16]string{
+	0: "success",
+}
+
+func (p *CommentServiceDeleteResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CommentServiceDeleteResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CommentServiceDeleteResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewDeleteResp()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CommentServiceDeleteResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("Delete_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *CommentServiceDeleteResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentServiceDeleteResult(%+v)", *p)
+}
+
+func (p *CommentServiceDeleteResult) DeepEqual(ano *CommentServiceDeleteResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *CommentServiceDeleteResult) Field0DeepEqual(src *DeleteResp) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type CommentServiceFindByVideoIdArgs struct {
+	Req *FindByVideoIdReq `thrift:"req,1" frugal:"1,default,FindByVideoIdReq" json:"req"`
+}
+
+func NewCommentServiceFindByVideoIdArgs() *CommentServiceFindByVideoIdArgs {
+	return &CommentServiceFindByVideoIdArgs{}
+}
+
+func (p *CommentServiceFindByVideoIdArgs) InitDefault() {
+	*p = CommentServiceFindByVideoIdArgs{}
+}
+
+var CommentServiceFindByVideoIdArgs_Req_DEFAULT *FindByVideoIdReq
+
+func (p *CommentServiceFindByVideoIdArgs) GetReq() (v *FindByVideoIdReq) {
+	if !p.IsSetReq() {
+		return CommentServiceFindByVideoIdArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *CommentServiceFindByVideoIdArgs) SetReq(val *FindByVideoIdReq) {
+	p.Req = val
+}
+
+var fieldIDToName_CommentServiceFindByVideoIdArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *CommentServiceFindByVideoIdArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *CommentServiceFindByVideoIdArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CommentServiceFindByVideoIdArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdArgs) ReadField1(iprot thrift.TProtocol) error {
+	p.Req = NewFindByVideoIdReq()
+	if err := p.Req.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CommentServiceFindByVideoIdArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindByVideoId_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentServiceFindByVideoIdArgs(%+v)", *p)
+}
+
+func (p *CommentServiceFindByVideoIdArgs) DeepEqual(ano *CommentServiceFindByVideoIdArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *CommentServiceFindByVideoIdArgs) Field1DeepEqual(src *FindByVideoIdReq) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type CommentServiceFindByVideoIdResult struct {
+	Success *FindByVideoIdResp `thrift:"success,0,optional" frugal:"0,optional,FindByVideoIdResp" json:"success,omitempty"`
+}
+
+func NewCommentServiceFindByVideoIdResult() *CommentServiceFindByVideoIdResult {
+	return &CommentServiceFindByVideoIdResult{}
+}
+
+func (p *CommentServiceFindByVideoIdResult) InitDefault() {
+	*p = CommentServiceFindByVideoIdResult{}
+}
+
+var CommentServiceFindByVideoIdResult_Success_DEFAULT *FindByVideoIdResp
+
+func (p *CommentServiceFindByVideoIdResult) GetSuccess() (v *FindByVideoIdResp) {
+	if !p.IsSetSuccess() {
+		return CommentServiceFindByVideoIdResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *CommentServiceFindByVideoIdResult) SetSuccess(x interface{}) {
+	p.Success = x.(*FindByVideoIdResp)
+}
+
+var fieldIDToName_CommentServiceFindByVideoIdResult = map[int16]string{
+	0: "success",
+}
+
+func (p *CommentServiceFindByVideoIdResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *CommentServiceFindByVideoIdResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				if err = iprot.Skip(fieldTypeId); err != nil {
+					goto SkipFieldError
+				}
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_CommentServiceFindByVideoIdResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdResult) ReadField0(iprot thrift.TProtocol) error {
+	p.Success = NewFindByVideoIdResp()
+	if err := p.Success.Read(iprot); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (p *CommentServiceFindByVideoIdResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("FindByVideoId_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *CommentServiceFindByVideoIdResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentServiceFindByVideoIdResult(%+v)", *p)
+}
+
+func (p *CommentServiceFindByVideoIdResult) DeepEqual(ano *CommentServiceFindByVideoIdResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *CommentServiceFindByVideoIdResult) Field0DeepEqual(src *FindByVideoIdResp) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
 type CommentServiceFindCommentByVideoIdLimit30Args struct {
-	Req *FindCommentByVideoIdLimit30Request `thrift:"req,1" frugal:"1,default,FindCommentByVideoIdLimit30Request" json:"req"`
+	Req *FindCommentByVideoIdLimit30Req `thrift:"req,1" frugal:"1,default,FindCommentByVideoIdLimit30Req" json:"req"`
 }
 
 func NewCommentServiceFindCommentByVideoIdLimit30Args() *CommentServiceFindCommentByVideoIdLimit30Args {
@@ -1639,15 +3144,15 @@ func (p *CommentServiceFindCommentByVideoIdLimit30Args) InitDefault() {
 	*p = CommentServiceFindCommentByVideoIdLimit30Args{}
 }
 
-var CommentServiceFindCommentByVideoIdLimit30Args_Req_DEFAULT *FindCommentByVideoIdLimit30Request
+var CommentServiceFindCommentByVideoIdLimit30Args_Req_DEFAULT *FindCommentByVideoIdLimit30Req
 
-func (p *CommentServiceFindCommentByVideoIdLimit30Args) GetReq() (v *FindCommentByVideoIdLimit30Request) {
+func (p *CommentServiceFindCommentByVideoIdLimit30Args) GetReq() (v *FindCommentByVideoIdLimit30Req) {
 	if !p.IsSetReq() {
 		return CommentServiceFindCommentByVideoIdLimit30Args_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *CommentServiceFindCommentByVideoIdLimit30Args) SetReq(val *FindCommentByVideoIdLimit30Request) {
+func (p *CommentServiceFindCommentByVideoIdLimit30Args) SetReq(val *FindCommentByVideoIdLimit30Req) {
 	p.Req = val
 }
 
@@ -1719,7 +3224,7 @@ ReadStructEndError:
 }
 
 func (p *CommentServiceFindCommentByVideoIdLimit30Args) ReadField1(iprot thrift.TProtocol) error {
-	p.Req = NewFindCommentByVideoIdLimit30Request()
+	p.Req = NewFindCommentByVideoIdLimit30Req()
 	if err := p.Req.Read(iprot); err != nil {
 		return err
 	}
@@ -1791,7 +3296,7 @@ func (p *CommentServiceFindCommentByVideoIdLimit30Args) DeepEqual(ano *CommentSe
 	return true
 }
 
-func (p *CommentServiceFindCommentByVideoIdLimit30Args) Field1DeepEqual(src *FindCommentByVideoIdLimit30Request) bool {
+func (p *CommentServiceFindCommentByVideoIdLimit30Args) Field1DeepEqual(src *FindCommentByVideoIdLimit30Req) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false

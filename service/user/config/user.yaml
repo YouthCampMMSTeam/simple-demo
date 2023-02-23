@@ -3,5 +3,6 @@ DbSource : root:123456@tcp(127.0.0.1:3306)/douyin?charset=utf8mb4&parseTime=1&lo
 EtcdAdress : 127.0.0.1:2379
 ServiceAddress : 127.0.0.1:10007
 UserServiceName : douyin-user-service
+RelationServiceName : douyin-relation-service
 IdentityKey : douyin-project-key
 jwtKey : ae0536f9-6450-4606-8e13-5a19ed505da0

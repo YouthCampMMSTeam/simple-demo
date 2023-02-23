@@ -2,9 +2,11 @@ package handler
 
 import (
 	"context"
+	"douyin-project/common/token"
 	"douyin-project/service/user/logic"
 	"douyin-project/service/user/svcctx"
 	"douyin-project/service/user/types"
+	"net/http"
 
 	"github.com/cloudwego/hertz/pkg/app"
 )
@@ -48,8 +50,34 @@ func UserRegisterHandler(serviceCtx *svcctx.ServiceContext) app.HandlerFunc {
 	}
 }
 
-// if _, exist := usersLoginInfo[token]; exist {
-// 	c.JSON(http.StatusOK, Response{StatusCode: 0})
-// } else {
-// 	c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
-// }
+// UserAction no practical effect, just check if token is valid
+func UserInfoHandler(serviceCtx *svcctx.ServiceContext) app.HandlerFunc {
+	return func(ctx context.Context, c *app.RequestContext) {
+		u, _ := c.Get(serviceCtx.IdentityKey)
+		tokenUser := u.(*token.TokenUser)
+
+		req := &types.UserInfoReq{}
+		if err := c.BindAndValidate(req); err != nil {
+			return
+		}
+
+		l := logic.NewUserLogic(serviceCtx)
+		// resp, err := l.UserRegister(ctx, &types.UserRegisterLogicReq{
+		// 	Name:     req.Name,
+		// 	Password: req.Password,
+		// })
+		resp, err := l.UserInfo(ctx, &types.UserInfoLogicReq{
+			UserId:        req.UserId,
+			CurrentUserId: tokenUser.Id,
+		})
+		if err != nil {
+			c.JSON(http.StatusOK, types.UserInfoResp{
+				StatusMsg:  err.Error(),
+				StatusCode: http.StatusBadRequest,
+			})
+			return
+		}
+
+		c.JSON(http.StatusOK, resp)
+	}
+}

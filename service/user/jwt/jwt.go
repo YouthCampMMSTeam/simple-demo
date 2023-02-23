@@ -7,7 +7,6 @@ import (
 	"douyin-project/service/user/logic"
 	"douyin-project/service/user/svcctx"
 	"douyin-project/service/user/types"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -57,7 +56,6 @@ func NewJwtjwtMiddleware(c *config.Config, svc *svcctx.ServiceContext) *jwt.Hert
 			if err := c.BindAndValidate(req); err != nil {
 				return nil, err
 			}
-			fmt.Printf("req %+v\n", req)
 
 			l := logic.NewUserLogic(svc)
 			resp, err := l.UserLogin(ctx, &types.UserLoginLogicReq{

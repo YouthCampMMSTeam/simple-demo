@@ -12,6 +12,7 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	FindOrderByTime(ctx context.Context, req *video.FindOrderByTimeReq, callOptions ...callopt.Option) (r *video.FindOrderByTimeResp, err error)
+	FindWithTimeLimit(ctx context.Context, req *video.FindWithTimeLimitReq, callOptions ...callopt.Option) (r *video.FindWithTimeLimitResp, err error)
 	FindByVideoId(ctx context.Context, req *video.FindByVideoIdReq, callOptions ...callopt.Option) (r *video.FindByVideoIdResp, err error)
 	FindByUserId(ctx context.Context, req *video.FindByUserIdReq, callOptions ...callopt.Option) (r *video.FindByUserIdResp, err error)
 	Insert(ctx context.Context, req *video.InsertReq, callOptions ...callopt.Option) (r *video.InsertResp, err error)
@@ -52,6 +53,11 @@ type kVideoServiceClient struct {
 func (p *kVideoServiceClient) FindOrderByTime(ctx context.Context, req *video.FindOrderByTimeReq, callOptions ...callopt.Option) (r *video.FindOrderByTimeResp, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.FindOrderByTime(ctx, req)
+}
+
+func (p *kVideoServiceClient) FindWithTimeLimit(ctx context.Context, req *video.FindWithTimeLimitReq, callOptions ...callopt.Option) (r *video.FindWithTimeLimitResp, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.FindWithTimeLimit(ctx, req)
 }
 
 func (p *kVideoServiceClient) FindByVideoId(ctx context.Context, req *video.FindByVideoIdReq, callOptions ...callopt.Option) (r *video.FindByVideoIdResp, err error) {
